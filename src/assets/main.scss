@@ -1,370 +1,355 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// styles.scss  ·  Gallery Carousel
-// ─────────────────────────────────────────────────────────────────────────────
+$font-display: "Cormorant Garamond", serif;
+$font-mono: "JetBrains Mono", monospace;
 
-// ── SCSS variables (compile-time) ────────────────────────────────────────────
-$font-display : 'Cormorant Garamond', serif;
-$font-mono    : 'JetBrains Mono', monospace;
+$color-bg: #080808;
+$color-surface: #111111;
+$color-surface2: #1a1a1a;
+$color-border: #242424;
+$color-text: #ddd8cc;
+$color-muted: #4a4a4a;
+$color-muted2: #6a6a6a;
+$color-accent: #bfa27a;
+$color-danger: #c05050;
 
-$color-bg       : #080808;
-$color-surface  : #111111;
-$color-surface2 : #1a1a1a;
-$color-border   : #242424;
-$color-text     : #ddd8cc;
-$color-muted    : #4a4a4a;
-$color-muted2   : #6a6a6a;
-$color-accent   : #bfa27a;
-$color-danger   : #c05050;
+$img-w: 272px;
+$img-h: 192px;
+$mobile-img-h: 240px;
+$gap: 18px;
+$radius: 3px;
+$btn-size: 44px;
+$mobile-bp: 600px;
 
-$img-w        : 272px;
-$img-h        : 192px;
-$mobile-img-h : 240px;
-$gap          : 18px;
-$radius       : 3px;
-$btn-size     : 44px;
-$mobile-bp    : 600px;
-
-// ── CSS custom properties (runtime / overridable) ────────────────────────────
 :root {
-  --bg         : #{$color-bg};
-  --surface    : #{$color-surface};
-  --surface2   : #{$color-surface2};
-  --border     : #{$color-border};
-  --text       : #{$color-text};
-  --muted      : #{$color-muted};
-  --muted2     : #{$color-muted2};
-  --accent     : #{$color-accent};
-  --accent-dim : #{rgba($color-accent, 0.12)};
-  --danger     : #{$color-danger};
-  --gap        : #{$gap};
-  --img-w      : #{$img-w};
-  --img-h      : #{$img-h};
-  --radius     : #{$radius};
-  --btn-size   : #{$btn-size};
+  --bg: #{$color-bg};
+  --surface: #{$color-surface};
+  --surface2: #{$color-surface2};
+  --border: #{$color-border};
+  --text: #{$color-text};
+  --muted: #{$color-muted};
+  --muted2: #{$color-muted2};
+  --accent: #{$color-accent};
+  --accent-dim: #{rgba($color-accent, 0.12)};
+  --danger: #{$color-danger};
+  --gap: #{$gap};
+  --img-w: #{$img-w};
+  --img-h: #{$img-h};
+  --radius: #{$radius};
+  --btn-size: #{$btn-size};
 }
 
-// ── Mixins ───────────────────────────────────────────────────────────────────
-
-// Flex centring shorthand
 @mixin flex-center($direction: row) {
-  display        : flex;
-  flex-direction : $direction;
-  align-items    : center;
+  display: flex;
+  flex-direction: $direction;
+  align-items: center;
   justify-content: center;
 }
 
-// Inset pseudo-element base (used for borders / overlays)
 @mixin pseudo-inset($z: 1) {
-  content        : '';
-  position       : absolute;
-  inset          : 0;
-  pointer-events : none;
-  border-radius  : var(--radius);
-  z-index        : $z;
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: var(--radius);
+  z-index: $z;
 }
 
-// Consistent SVG icon style
 @mixin svg-icon($size: 18px, $weight: 2) {
-  width           : $size;
-  height          : $size;
-  stroke          : currentColor;
-  fill            : none;
-  stroke-width    : $weight;
-  stroke-linecap  : round;
-  stroke-linejoin : round;
-  flex-shrink     : 0;
+  width: $size;
+  height: $size;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: $weight;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
 }
 
-// Accent glow shadow
 @mixin accent-glow($spread: 24px, $alpha: 0.3) {
   box-shadow: 0 0 $spread rgba($color-accent, $alpha);
 }
 
-// ── Keyframes ────────────────────────────────────────────────────────────────
-
 @keyframes shimmer {
-  0%   { background-position:  200% center; }
-  100% { background-position: -200% center; }
+  0% {
+    background-position: 200% center;
+  }
+
+  100% {
+    background-position: -200% center;
+  }
 }
 
 @keyframes selectFlash {
-  0%   { box-shadow: inset 0 0 0  0   rgba($color-accent, 0);    }
-  40%  { box-shadow: inset 0 0 0  8px rgba($color-accent, 0.25); }
-  100% { box-shadow: inset 0 0 0  0   rgba($color-accent, 0);    }
+  0% {
+    box-shadow: inset 0 0 0 0 rgba($color-accent, 0);
+  }
+
+  40% {
+    box-shadow: inset 0 0 0 8px rgba($color-accent, 0.25);
+  }
+
+  100% {
+    box-shadow: inset 0 0 0 0 rgba($color-accent, 0);
+  }
 }
 
 @keyframes selSlideIn {
-  from { opacity: 0; transform: translateX(-14px) scale(0.97); }
-  to   { opacity: 1; transform: translateX(0)     scale(1);    }
-}
+  from {
+    opacity: 0;
+    transform: translateX(-14px) scale(0.97);
+  }
 
-// ── Reset ────────────────────────────────────────────────────────────────────
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
 
 *,
 *::before,
 *::after {
-  box-sizing : border-box;
-  margin     : 0;
-  padding    : 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-
-// ── Base ─────────────────────────────────────────────────────────────────────
 
 html,
 body {
-  min-height  : 100%;
-  background  : var(--bg);
-  color       : var(--text);
-  font-family : $font-mono;
-  overflow-x  : hidden;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: $font-mono;
+  overflow-x: hidden;
 }
 
-// Grain noise overlay
 body::before {
   @include pseudo-inset(0);
-  position    : fixed;
-  opacity     : 0.025;
+  position: fixed;
+  opacity: 0.025;
   /* prettier-ignore */
-  background-image : url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size  : 128px 128px;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
 }
-
-// ── App shell ────────────────────────────────────────────────────────────────
 
 #app {
-  position        : relative;
-  z-index         : 1;
-  min-height      : 100vh;
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
   @include flex-center(column);
-  align-items     : center;
-  padding         : 64px 0 96px;
+  align-items: center;
+  padding: 64px 0 96px;
 }
-
-// ── Site Header ──────────────────────────────────────────────────────────────
 
 .site-header {
-  text-align    : center;
-  margin-bottom : 56px;
-
-  &__eyebrow {
-    font-size      : 0.65rem;
-    letter-spacing : 0.25em;
-    text-transform : uppercase;
-    color          : var(--accent);
-    margin-bottom  : 10px;
-  }
+  text-align: center;
+  margin-bottom: 56px;
 
   &__title {
-    font-family    : $font-display;
-    font-size      : clamp(2.8rem, 6vw, 5rem);
-    font-weight    : 300;
-    letter-spacing : -0.01em;
-    line-height    : 1;
-    color          : var(--text);
+    font-family: $font-display;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    color: var(--text);
 
     em {
-      font-style : italic;
-      color      : var(--accent);
+      font-style: italic;
+      color: var(--accent);
     }
   }
 }
-
-// ── Carousel Root ────────────────────────────────────────────────────────────
 
 .carousel-root {
-  width      : 100%;
-  max-width  : 1440px;
-  padding    : 0 72px;
-  position   : relative;
+  width: 100%;
+  max-width: 1440px;
+  padding: 0 72px;
+  position: relative;
 }
-
-// ── Carousel Viewport ────────────────────────────────────────────────────────
 
 .carousel-viewport {
-  overflow      : hidden;
-  border-radius : var(--radius);
+  overflow: hidden;
+  border-radius: var(--radius);
 
-  // Soft edge fade — both prefixed and standard
-  $edge-mask: linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%);
-  -webkit-mask-image : $edge-mask;
-          mask-image : $edge-mask;
+  $edge-mask: linear-gradient(
+    to right,
+    transparent 0%,
+    black 3%,
+    black 97%,
+    transparent 100%
+  );
+  -webkit-mask-image: $edge-mask;
+  mask-image: $edge-mask;
 }
-
-// ── Carousel Track ───────────────────────────────────────────────────────────
 
 .carousel-track {
-  display      : flex;
-  gap          : var(--gap);
-  will-change  : transform;
+  display: flex;
+  gap: var(--gap);
+  will-change: transform;
 }
 
-// ── Carousel Item ────────────────────────────────────────────────────────────
-
 .carousel-item {
-  flex-shrink   : 0;
-  width         : var(--img-w);
-  height        : var(--img-h);
-  position      : relative;
-  cursor        : pointer;
-  border-radius : var(--radius);
-  overflow      : hidden;
-  outline       : none;
+  flex-shrink: 0;
+  width: var(--img-w);
+  height: var(--img-h);
+  position: relative;
+  cursor: pointer;
+  border-radius: var(--radius);
+  overflow: hidden;
+  outline: none;
 
-  // ── Selection border (::before pseudo) ───────────────────────────
   &::before {
     @include pseudo-inset(3);
-    border      : 2.5px solid var(--accent);
-    opacity     : 0;
-    transition  : opacity 0.25s ease;
+    border: 2.5px solid var(--accent);
+    opacity: 0;
+    transition: opacity 0.25s ease;
   }
 
-  // ── States ───────────────────────────────────────────────────────
-
   &:hover {
-    // Zoom + desaturate-to-colour on the image
     .carousel-item__img {
-      transform : scale(1.06);
-      filter    : grayscale(0%) brightness(1);
+      transform: scale(1.06);
+      filter: grayscale(0%) brightness(1);
     }
 
-    // Darken overlay appears
     .carousel-item__overlay {
-      opacity : 1;
+      opacity: 1;
     }
 
-    // Checkmark ghost hint – the fix requested
     .carousel-item__check {
-      opacity   : 0.45;
-      transform : scale(1) rotate(0deg);
+      opacity: 0.45;
+      transform: scale(1) rotate(0deg);
     }
   }
 
   &.is-selected {
-    // Selection border flashes in
     &::before {
-      opacity   : 1;
-      animation : selectFlash 0.35s ease;
+      opacity: 1;
+      animation: selectFlash 0.35s ease;
     }
 
-    // Checkmark fully visible – overrides the hover hint above
     .carousel-item__check {
-      opacity   : 1;
-      transform : scale(1) rotate(0deg);
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+      background: rgba(179, 236, 179, 0.423);
     }
   }
 
-  // ── Child elements ────────────────────────────────────────────────
-
   &__img {
-    width          : 100%;
-    height         : 100%;
-    object-fit     : cover;
-    display        : block;
-    transition     : transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                     filter 0.4s ease;
-    filter         : grayscale(30%) brightness(0.9);
-    pointer-events : none;
-    user-select    : none;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition:
+      transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      filter 0.4s ease;
+    filter: grayscale(30%) brightness(0.9);
+    pointer-events: none;
+    user-select: none;
   }
 
   &__overlay {
-    position      : absolute;
-    inset         : 0;
-    background    : linear-gradient(160deg, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.55) 100%);
-    opacity       : 0;
-    transition    : opacity 0.3s ease;
-    border-radius : var(--radius);
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      160deg,
+      rgba(0, 0, 0, 0) 50%,
+      rgba(0, 0, 0, 0.55) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: var(--radius);
   }
 
   &__check {
-    position      : absolute;
-    top           : 9px;
-    right         : 9px;
-    width         : 22px;
-    height        : 22px;
-    background    : var(--accent);
-    border-radius : 50%;
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    width: 22px;
+    height: 22px;
+    background: var(--accent);
+    border-radius: 50%;
     @include flex-center;
-    z-index       : 4;
-    opacity       : 0;
-    // Default hidden state — collapsed + rotated
-    transform     : scale(0.4) rotate(-15deg);
-    transition    : opacity   0.22s ease,
-                    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 4;
+    opacity: 0;
+    transform: scale(0.4) rotate(-15deg);
+    transition:
+      opacity 0.22s ease,
+      transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     pointer-events: none;
 
     svg {
       @include svg-icon(12px, 2.8);
-      stroke : $color-bg;  // dark tick on gold badge
+      stroke: $color-bg;
     }
   }
 }
 
-// ── Carousel Nav Buttons ─────────────────────────────────────────────────────
-
 .carousel-btn {
-  position      : absolute;
-  top           : 50%;
-  transform     : translateY(-50%);
-  width         : var(--btn-size);
-  height        : var(--btn-size);
-  background    : var(--surface2);
-  border        : 1px solid var(--border);
-  border-radius : 50%;
-  cursor        : pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--btn-size);
+  height: var(--btn-size);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
   @include flex-center;
-  z-index       : 20;
-  color         : var(--text);
-  transition    : background   0.22s ease,
-                  border-color 0.22s ease,
-                  color        0.22s ease,
-                  transform    0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
-                  box-shadow   0.22s ease;
+  z-index: 20;
+  color: var(--text);
+  transition:
+    background 0.22s ease,
+    border-color 0.22s ease,
+    color 0.22s ease,
+    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.22s ease;
 
   &:hover {
-    background   : var(--accent);
-    border-color : var(--accent);
-    color        : $color-bg;
-    transform    : translateY(-50%) scale(1.12);
+    background: var(--accent);
+    border-color: var(--accent);
+    color: $color-bg;
+    transform: translateY(-50%) scale(1.12);
     @include accent-glow;
   }
 
   &:active {
-    transform : translateY(-50%) scale(0.97);
+    transform: translateY(-50%) scale(0.97);
   }
 
-  &--prev { left  : 14px; }
-  &--next { right : 14px; }
+  &--prev {
+    left: 14px;
+  }
 
-  svg { @include svg-icon; }
+  &--next {
+    right: 14px;
+  }
+
+  svg {
+    @include svg-icon;
+  }
 }
 
-// ── Loading Skeletons ────────────────────────────────────────────────────────
-
 .skeleton-row {
-  display   : flex;
-  gap       : var(--gap);
-  padding   : 0 72px;
-  width     : 100%;
-  max-width : 1440px;
-  overflow  : hidden;
+  display: flex;
+  gap: var(--gap);
+  padding: 0 72px;
+  width: 100%;
+  max-width: 1440px;
+  overflow: hidden;
 }
 
 .skeleton-item {
-  flex-shrink      : 0;
-  width            : var(--img-w);
-  height           : var(--img-h);
-  border-radius    : var(--radius);
-  background       : linear-gradient(
+  flex-shrink: 0;
+  width: var(--img-w);
+  height: var(--img-h);
+  border-radius: var(--radius);
+  background: linear-gradient(
     110deg,
-    var(--surface)  30%,
+    var(--surface) 30%,
     var(--surface2) 50%,
-    var(--surface)  70%
+    var(--surface) 70%
   );
-  background-size  : 200% 100%;
-  animation        : shimmer 1.6s infinite;
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
 
-  // Stagger delay for sibling items (supports up to 6 skeletons)
   @for $i from 2 through 6 {
     &:nth-child(#{$i}) {
       animation-delay: #{($i - 1) * 0.1}s;
@@ -372,160 +357,176 @@ body::before {
   }
 }
 
-// ── Selected Section ─────────────────────────────────────────────────────────
-
 .selected-section {
-  width      : 100%;
-  max-width  : 1440px;
-  padding    : 0 72px;
-  margin-top : 64px;
+  width: 100%;
+  max-width: 1440px;
+  padding: 0 72px;
+  margin-top: 64px;
 }
 
 .selected-header {
-  display        : flex;
-  align-items    : baseline;
-  gap            : 14px;
-  margin-bottom  : 20px;
-  padding-bottom : 14px;
-  border-bottom  : 1px solid var(--border);
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
 
   &__title {
-    font-family    : $font-display;
-    font-size      : 1.3rem;
-    font-weight    : 300;
-    letter-spacing : 0.02em;
-    color          : var(--text);
+    font-family: $font-display;
+    font-size: 1.3rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: var(--text);
   }
 
   &__count {
-    font-size   : 0.62rem;
-    font-family : $font-mono;
-    color       : var(--accent);
-    background  : var(--accent-dim);
-    padding     : 2px 9px;
+    font-size: 0.62rem;
+    font-family: $font-mono;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 2px 9px;
     border-radius: 20px;
     letter-spacing: 0.06em;
   }
 }
 
 .selected-list {
-  display        : flex;
-  flex-direction : column;
-  gap            : 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
 }
 
 .selected-entry {
-  display     : flex;
-  align-items : center;
-  gap         : 14px;
-  padding     : 10px 14px;
-  background  : var(--surface);
-  border      : 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  transition  : border-color 0.2s ease;
+  transition: border-color 0.2s ease;
 
   &:hover {
-    border-color : var(--muted);
+    border-color: var(--muted);
   }
 
   &__thumb {
-    width        : 54px;
-    height       : 40px;
-    object-fit   : cover;
+    width: 54px;
+    height: 40px;
+    object-fit: cover;
     border-radius: 2px;
-    flex-shrink  : 0;
-    filter       : grayscale(20%);
+    flex-shrink: 0;
+    filter: grayscale(20%);
   }
 
   &__id {
-    font-size      : 0.62rem;
-    color          : var(--accent);
-    letter-spacing : 0.06em;
-    flex-shrink    : 0;
+    font-size: 0.62rem;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
   }
 
   &__url {
-    font-size      : 0.65rem;
-    color          : var(--muted2);
-    overflow       : hidden;
-    text-overflow  : ellipsis;
-    white-space    : nowrap;
-    flex           : 1;
-    letter-spacing : 0.01em;
+    font-size: 0.65rem;
+    color: var(--muted2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    letter-spacing: 0.01em;
   }
 
   &__remove {
-    background : none;
-    border     : none;
-    cursor     : pointer;
-    color      : var(--muted);
-    padding    : 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    padding: 5px;
     border-radius: 2px;
     @include flex-center;
-    transition : color     0.18s ease,
-                 transform 0.18s ease;
+    transition:
+      color 0.18s ease,
+      transform 0.18s ease;
     flex-shrink: 0;
 
     &:hover {
-      color     : var(--danger);
-      transform : scale(1.2) rotate(10deg);
+      color: var(--danger);
+      transform: scale(1.2) rotate(10deg);
     }
 
-    svg { @include svg-icon(13px, 2.2); }
+    svg {
+      @include svg-icon(13px, 2.2);
+    }
   }
 }
 
-// ── Vue TransitionGroup — selected list ──────────────────────────────────────
-
 .sel-enter-active {
-  animation : selSlideIn 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: selSlideIn 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .sel-leave-active {
-  transition : opacity    0.22s ease,
-               transform  0.22s ease,
-               max-height 0.28s ease;
-  overflow   : hidden;
-  max-height : 64px;
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease,
+    max-height 0.28s ease;
+  overflow: hidden;
+  max-height: 64px;
 }
 
 .sel-leave-to {
-  opacity    : 0;
-  transform  : translateX(16px);
-  max-height : 0;
+  opacity: 0;
+  transform: translateX(16px);
+  max-height: 0;
 }
 
 .sel-move {
-  transition : transform 0.3s ease;
+  transition: transform 0.3s ease;
 }
-
-// ── Responsive ───────────────────────────────────────────────────────────────
 
 @media (max-width: $mobile-bp) {
   #app {
-    padding : 36px 0 56px;
+    padding: 36px 0 56px;
   }
 
   .site-header {
-    margin-bottom : 32px;
+    margin-bottom: 32px;
 
-    &__title { font-size: 2.4rem; }
+    &__title {
+      font-size: 2.4rem;
+    }
   }
 
   .carousel-root,
   .skeleton-row {
-    padding : 0 48px;
+    padding: 0 48px;
   }
 
   .selected-section {
-    padding    : 0 20px;
-    margin-top : 40px;
+    padding: 0 20px;
+    margin-top: 40px;
   }
 
   .carousel-btn {
-    --btn-size : 36px;
+    --btn-size: 36px;
 
-    &--prev { left  : 4px; }
-    &--next { right : 4px; }
+    &--prev {
+      left: 4px;
+    }
+
+    &--next {
+      right: 4px;
+    }
   }
+}
+
+.selected-empty {
+  width: 100%;
+  max-width: 1440px;
+  padding: 48px 72px;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }

@@ -1,4 +1,3 @@
-// ─── Shared types ─────────────────────────────────────────────────────────
 
 export interface PicsumItem {
   id: string

@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import Carousel      from '@/components/Carousel.vue'
-import SelectedList  from '@/components/SelectedList.vue'
-import { useImages }    from '@/composables/useImages'
-import { useSelection } from '@/composables/useSelection'
+import Carousel from "@/components/Carousel.vue";
+import SelectedList from "@/components/SelectedList.vue";
+import { useImages } from "@/composables/useImages";
+import { useSelection } from "@/composables/useSelection";
 
-const { images, loading } = useImages()
-const { selectedSet, selectedImages, toggleSelect } = useSelection(images)
+const { images, loading } = useImages();
+const { selectedSet, selectedImages, toggleSelect } = useSelection(images);
 </script>
 
 <template>
   <header class="site-header">
-    <p class="site-header__eyebrow">picsum.photos · curated</p>
     <h1 class="site-header__title">The <em>Gallery</em></h1>
   </header>
 
@@ -26,8 +25,8 @@ const { selectedSet, selectedImages, toggleSelect } = useSelection(images)
   />
 
   <SelectedList
-    v-if="selectedImages.length > 0"
     :items="selectedImages"
+    :loading="loading"
     @remove="toggleSelect"
   />
 </template>
