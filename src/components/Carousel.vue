@@ -13,6 +13,7 @@ const TRANSITION_MS = 520;
 const props = defineProps<{
   images: GalleryImage[];
   selectedIds: Set<string>;
+  loading?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -70,20 +71,34 @@ const doSnap = () => {
     });
   }
 };
+const ensureInBounds = (callback: () => void) => {
+  const n = props.images.length;
+  if (!n) return;
+
+  if (Math.abs(internalIdx.value) >= n) {
+    animating.value = false;
+    internalIdx.value = ((internalIdx.value % n) + n) % n;
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        animating.value = true;
+        callback();         // тепер безпечно рухаємось
+        scheduleSnap();
+      });
+    });
+  } else {
+    callback();
+    scheduleSnap();
+  }
+};
 
 const scheduleSnap = () => {
   if (snapTimer) clearTimeout(snapTimer);
   snapTimer = setTimeout(doSnap, TRANSITION_MS + 50);
 };
 
-const goNext = () => {
-  internalIdx.value++;
-  scheduleSnap();
-};
-const goPrev = () => {
-  internalIdx.value--;
-  scheduleSnap();
-};
+const goNext = () => ensureInBounds(() => internalIdx.value++);
+const goPrev = () => ensureInBounds(() => internalIdx.value--);
 
 useSwipe(containerRef, {
   onSwipeLeft: goNext,
@@ -113,7 +128,11 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="carousel-root" ref="containerRef">
+  <div v-if="props.loading || !props.images.length" class="skeleton-row">
+    <div v-for="n in 6" :key="n" class="skeleton-item" />
+  </div>
+
+  <div v-else class="carousel-root" ref="containerRef">
     <button
       class="carousel-btn carousel-btn--prev"
       @click="goPrev"
