@@ -9,7 +9,7 @@ import {
   MOBILE_BP,
 } from "@/constants/carousel";
 import { useSwipe } from "@/composables/useSwipe";
-
+const TRANSITION_MS = 520;
 const props = defineProps<{
   images: GalleryImage[];
   selectedIds: Set<string>;
@@ -63,15 +63,17 @@ const doSnap = () => {
   if (internalIdx.value >= n || internalIdx.value <= -n) {
     animating.value = false;
     internalIdx.value = ((internalIdx.value % n) + n) % n;
-    nextTick(() => {
-      animating.value = true;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        animating.value = true;
+      });
     });
   }
 };
 
 const scheduleSnap = () => {
   if (snapTimer) clearTimeout(snapTimer);
-  snapTimer = setTimeout(doSnap, 560);
+  snapTimer = setTimeout(doSnap, TRANSITION_MS + 50);
 };
 
 const goNext = () => {
